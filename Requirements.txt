@@ -1,0 +1,7 @@
+json
+base64
+IPython
+langchain
+getpass
+os
+pdfplumber

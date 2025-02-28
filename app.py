@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template, session, url_for , redirect
 from flask_session import Session
 import backend as bk
+import databasemodel as dbm
 import os
 import json
 
@@ -33,7 +34,13 @@ def upload():
     
     botresponse = bk.init(file)
     return jsonify(botresponse)
-    
+
+@app.route('/submit', methods=['POST'])
+def db_submit():
+    data = request.json
+    print(data)
+    result = dbm.form_data_submit(data)
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True)

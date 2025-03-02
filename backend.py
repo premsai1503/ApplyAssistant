@@ -2,7 +2,7 @@ import base64
 import json
 import re
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, tool
-from together import Together
+# from together import Together
 from langchain.chat_models import init_chat_model
 import getpass
 import os
@@ -105,6 +105,7 @@ def get_response(model, messages, document , details):
 
         messages.append(prompt)
         response = model.invoke(messages)
+        print(response)
         return response.content
     except Exception as e:
         return {"response": f"Error processing file: {str(e)}"}
@@ -129,11 +130,14 @@ def jsonification(response):
         return {"error": "Invalid JSON format."}
 
 def init(document):
-    labels = [
-    "First Name", "Last Name", "Sex","Passport Number","Permanent Account Number", "Nationality",
-    "Date of Birth", "Place of Birth", "Date of Issue", "Date of Expiration"
-    ]
-    details = ", ".join(labels)
-    model , messages = zero_shot_learning(details)
-    response = get_response(model, messages, document , details)
+    try:
+        labels = [
+        "First Name", "Last Name", "Sex","Passport Number","Permanent Account Number", "Nationality",
+        "Date of Birth", "Place of Birth", "Date of Issue", "Date of Expiration"
+        ]
+        details = ", ".join(labels)
+        model , messages = zero_shot_learning(details)
+        response = get_response(model, messages, document , details)
+    except Exception as e:
+        return {"error": f"Processing failed: {str(e)}"}
     return json.loads(response)

@@ -34,13 +34,21 @@
             background-color: #b71c1c;
         }
     </style>
+    <!-- Add chatbot CSS and font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chatbot/chatbot.css') }}">
 </head>
 <body>
     <div class="header">Wells Fargo Savings Account</div>
     <div class="container">
         <h1>Open Your Savings Account Today</h1>
         <p>Start saving with Wells Fargo and enjoy great benefits, security, and convenience.</p>
-        <button class="cta-button" onclick="location.href='/form'">Get Started</button>
+        <button class="cta-button" onclick="location.href='/savings-options'">Get Started</button>
     </div>
+    <script src="{{ url_for('static', filename='chatbot/chatbot.js') }}"></script>
+    <script type="module">
+        import { initializeChatbot } from '/chatbot/chatbot.js';
+        document.addEventListener('DOMContentLoaded', initializeChatbot);
+    </script>
 </body>
 </html>

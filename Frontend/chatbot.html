@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Component</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chatbot/chatbot.css') }}">
+</head>
+<body>
+    <!-- Chatbot Container -->
+    <div class="chatbot-container" id="chatbot">
+        <div class="chatbot-header">
+            <span>Virtual Assistant</span>
+            <button class="minimize-btn" type="button" aria-label="Minimize chat">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+        
+        <div class="chatbot-messages" id="chatbot-messages">
+            <!-- Messages will be inserted here dynamically -->
+        </div>
+        
+        <div class="chatbot-input-container">
+            <label class="chatbot-upload-btn" aria-label="Upload document">
+                <i class="fas fa-file-upload"></i>
+                <input type="file" 
+                       id="chatbot-upload" 
+                       accept="image/*,.pdf" 
+                       hidden>
+            </label>
+            <input type="text" 
+                   class="chatbot-input" 
+                   id="chatbot-input" 
+                   placeholder="Type your message..."
+                   aria-label="Chat input">
+            <button class="chatbot-send-btn" 
+                    type="button" 
+                    aria-label="Send message">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Chat Toggle Button -->
+    <button class="chatbot-button" 
+            type="button" 
+            aria-label="Open chat">
+        <i class="fas fa-comment-dots"></i> Chat
+    </button>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='chatbot/chatbot.js') }}"></script>
+    <script type="module">
+        import { initializeChatbot } from '/chatbot/chatbot.js';
+        document.addEventListener('DOMContentLoaded', initializeChatbot);
+    </script>
+</body>
+</html>

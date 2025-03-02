@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Savings Account</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background-color: #d32f2f;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+        .container {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .account-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .account-card h3 {
+            color: #d32f2f;
+            margin-top: 0;
+        }
+        .account-features {
+            margin: 15px 0;
+            padding: 0;
+            list-style: none;
+        }
+        .account-features li {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .select-btn {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        .select-btn:hover {
+            background-color: #b71c1c;
+        }
+        .most-popular {
+            border: 2px solid #d32f2f;
+            position: relative;
+        }
+        .most-popular::after {
+            content: "Most Popular";
+            background: #d32f2f;
+            color: white;
+            padding: 5px 10px;
+            position: absolute;
+            top: -15px;
+            right: 10px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chatbot/chatbot.css') }}">
+</head>
+<body>
+    <div class="header">Choose Your Savings Account</div>
+    <div class="container">
+        <!-- Pushman Savings -->
+        <div class="account-card most-popular">
+            <h3>Way2Save Savings</h3>
+            <ul class="account-features">
+                <li>Best for: Saving as you spend with automatic transfers</li>
+                <li>Monthly fee: $5 (waivable)</li>
+                <li>Minimum deposit: $25</li>
+                <li>Overdraft protection available</li>
+            </ul>
+            <button class="select-btn" onclick="location.href='/form'">Select</button>
+        </div>
+
+        <!-- Platinum Savings -->
+        <div class="account-card">
+            <h3>Platinum Savings</h3>
+            <ul class="account-features">
+                <li>Best for: Higher balance savings</li>
+                <li>Monthly fee: $12 (waivable with $3,500 balance)</li>
+                <li>Minimum deposit: $25</li>
+                <li>Check writing privileges</li>
+            </ul>
+            <button class="select-btn" onclick="location.href='/form'">Select</button>
+        </div>
+
+        <!-- CD Options -->
+        <div class="account-card">
+            <h3>Certificates of Deposit</h3>
+            <ul class="account-features">
+                <li>Best for: Fixed-term savings</li>
+                <li>Terms: Flexible term options from 3 months to a year or more</li>
+                <li>Minimum deposit: $2,500</li>
+                <li>No monthly fees</li>
+            </ul>
+            <button class="select-btn" onclick="location.href='/form'">Select</button>
+        </div>
+    </div>
+    {% include 'chatbot.html' %}
+
+    <!-- Chatbot scripts -->
+    <script src="{{ url_for('static', filename='chatbot/chatbot.js') }}"></script>
+    <script type="module">
+        import { initializeChatbot } from '/chatbot/chatbot.js';
+        document.addEventListener('DOMContentLoaded', initializeChatbot);
+    </script>
+</body>
+</html>

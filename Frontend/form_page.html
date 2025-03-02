@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            padding: 50px;
+            display: flex;
+            justify-content: center;
+        }
+        .header {
+            width: 100%;
+            background-color: #d32f2f;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .form-container h2 {
+            text-align: center;
+        }
+        .form-container label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .form-container input {
+            width: calc(100% - 20px);
+            padding: 12px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            display: block;
+        }
+        .form-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        input {
+            font-size: 14px; /* Change font size */
+            font-family: Arial, sans-serif; /* Change font family */
+            padding: 10px; /* Optional: add padding */
+            border: 1px solid #ccc; /* Optional: add border */
+            border-radius: 5px; /* Optional: rounded corners */
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='chatbot/chatbot.css') }}">  
+</head>
+<body>
+    <div class="header">Account Registration</div>
+    <div class="container">
+        <div class="form-container">
+            <h2>Enter Your Details</h2>
+            <form id="registration-form">
+                <label for="FirstName">First Name:</label>
+                <input type="text" id="FirstName" name="FirstName">
+                <label for="LastName">Last Name:</label>
+                <input type="text" id="LastName" name="LastName">
+                <label for="Sex">Sex:</label>
+                <input type="text" id="Sex" name="Sex">
+                <label for="PassportNumber">Passport Number:</label>
+                <input type="text" id="PassportNumber" name="PassportNumber">
+                <!-- <label for="PermanentAccountNumber">Permanent Account Number:</label> -->
+                <!-- <input type="text" id="PermanentAccountNumber" name="PermanentAccountNumber"> -->
+                <label for="Nationality">Nationality:</label>
+                <input type="text" id="Nationality" name="Nationality">
+                <label for="DateofBirth">Date of Birth:</label>
+                <input type="text" id="DateofBirth" name="DateofBirth">
+                <label for="PlaceofBirth">Place of Birth:</label>
+                <input type="text" id="PlaceofBirth" name="PlaceofBirth">
+                <label for="DateofIssue">Date of Issue:</label>
+                <input type="text" id="DateofIssue" name="DateofIssue">
+                <label for="DateofExpiration">Date of Expiration:</label>
+                <input type="text" id="DateofExpiration" name="DateofExpiration">
+                <button type="button" onclick="submitForm()">Submit</button>
+            </form>
+        </div>
+    </div>
+    {% include 'chatbot.html' %}
+    <script src="{{ url_for('static', filename='chatbot/chatbot.js') }}"></script>
+    <script type="module">
+       import { initializeChatbot } from '/chatbot/chatbot.js';
+       document.addEventListener('DOMContentLoaded', initializeChatbot);
+    </script>
+    <script>
+
+        // function handleMessageKeyPress(event) {
+        //     if (event.key === "Enter") {
+        //         sendMessage();
+        //     }
+        // }
+
+        function submitForm() {
+            // Get the form
+            var form = document.getElementById("registration-form");
+            
+            // Extract form data (for future use, like sending to backend)
+            var formData = new FormData(form);
+            var data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+        
+             // You can replace this with an API call
+            // Fetch request without using await
+            fetch('/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to submit form.');
+                }
+                return response.json();
+            })
+            // 
+            .then(responseData => {
+                window.location.href = '/success'; // Redirect here
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while submitting the form." || responseData.message);
+            });
+            form.reset(); // Clear form after successful submission
+        }
+    </script>
+</body>
+</html>

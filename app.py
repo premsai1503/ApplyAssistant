@@ -42,5 +42,9 @@ def db_submit():
     result = dbm.form_data_submit(data)
     return jsonify(result)
 
+@app.route('/success')
+def success_page():
+    return render_template('success.html')
+
 if __name__ == '__main__':
     app.run(debug=True)

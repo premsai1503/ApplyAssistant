@@ -146,6 +146,15 @@
             font-size: 16px;
             border-radius: 50px;
         }
+
+        input {
+            font-size: 18px; /* Change font size */
+            font-family: Arial, sans-serif; /* Change font family */
+            padding: 10px; /* Optional: add padding */
+            border: 1px solid #ccc; /* Optional: add border */
+            border-radius: 5px; /* Optional: rounded corners */
+        }
+        
     </style>
 </head>
 <body>
@@ -162,8 +171,8 @@
                 <input type="text" id="Sex" name="Sex">
                 <label for="PassportNumber">Passport Number:</label>
                 <input type="text" id="PassportNumber" name="PassportNumber">
-                <label for="PermanentAccountNumber">Permanent Account Number:</label>
-                <input type="text" id="PermanentAccountNumber" name="PermanentAccountNumber">
+                <!-- <label for="PermanentAccountNumber">Permanent Account Number:</label> -->
+                <!-- <input type="text" id="PermanentAccountNumber" name="PermanentAccountNumber"> -->
                 <label for="Nationality">Nationality:</label>
                 <input type="text" id="Nationality" name="Nationality">
                 <label for="DateofBirth">Date of Birth:</label>
@@ -317,8 +326,9 @@
                 }
                 return response.json();
             })
+            // 
             .then(responseData => {
-                alert(responseData.message || "Form submitted successfully!"); // Clear form after successful submission
+                window.location.href = '/success'; // Redirect here
             })
             .catch(error => {
                 console.error("Error:", error);

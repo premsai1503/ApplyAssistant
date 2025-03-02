@@ -22,7 +22,7 @@ def encode_image_from_file(image_file):
     return base64.b64encode(image_file.read()).decode('utf-8')
 
 def load_image():
-    image_path = r"C:\Users\96895\Desktop\ApplyAI\sample_usa_passport.jpg"
+    image_path = "images/sample_usa_passport.jpg"
     img = encode_image(image_path)
     return img
 

@@ -13,10 +13,18 @@ db = client.get_database("Apply_Assistant")
 collection = db.get_collection("form_submissions")
 
 def validation_check(data):
-    if not data.get("FirstName"):
-        return {"success": False, "error": "First name is required."}
-    if not data.get("LastName"):
-        return {"success": False, "error": "Last name is required."}
+    required_fields = [
+        "SSN", "MobileNumber", "FirstName", "LastName", 
+        "PassportNumber", "DateofBirth"
+    ]
+    
+    for field in required_fields:
+        if not data.get(field):
+            return {"success": False, "error": f"{field} is required."}
+    # if not data.get("FirstName"):
+    #     return {"success": False, "error": "First name is required."}
+    # if not data.get("LastName"):
+    #     return {"success": False, "error": "Last name is required."}
     # if not data["PermanentAccountNumber"].isdigit():
     #     return {"success": False, "error": "Permanent account number must be numeric."}
     return {"success": True}

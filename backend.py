@@ -11,6 +11,29 @@ from IPython.display import Markdown
 
 load_dotenv()
 
+FIELD_MAPPING = {
+    "SSN": ("SSN", "SSN"),
+    "MobileNumber": ("Mobile Number", "MobileNumber"),
+    "FirstName": ("First Name", "FirstName"),
+    "LastName": ("Last Name", "LastName"),
+    "Sex": ("Sex", "Sex"),
+    "PassportNumber": ("Passport Number", "PassportNumber"),
+    "PermanentAccountNumber": ("Permanent Account Number", "PermanentAccountNumber"),
+    "Nationality": ("Nationality", "Nationality"),
+    "DateofBirth": ("Date of Birth", "DateofBirth"),
+    "PlaceofBirth": ("Place of Birth", "PlaceofBirth"),
+    "DateofIssue": ("Date of Issue", "DateofIssue"),
+    "DateofExpiration": ("Date of Expiration", "DateofExpiration")
+}
+
+def get_human_label(field):
+    """Get human-readable label for a field"""
+    return FIELD_MAPPING.get(field, (field,))[0]
+
+def get_form_field_id(field):
+    """Get form field ID for a backend field"""
+    return FIELD_MAPPING.get(field, (None, field))[1]
+
 if not os.environ.get("TOGETHER_API_KEY"):
   os.environ["TOGETHER_API_KEY"] = os.getenv("TOGETHER_API_KEY")
 
@@ -60,6 +83,8 @@ def prompt_message(details,):
             {
                 "type" : "text",
                 "text" : """{
+                                "SSN": "NOT FOUND",
+                                "Mobile Number": "NOT FOUND",
                                 "FirstName": "Nicholas",
                                 "LastName": "Burwell",
                                 "Sex": "Male",
@@ -115,6 +140,7 @@ def jsonification(response):
     try:
     # Extract JSON from response (removes extra text)
         match = re.search(r'\{.*\}', response, re.DOTALL)
+        
         if match:
             # Extract JSON part
             json_str = match.group(0)  
@@ -123,21 +149,44 @@ def jsonification(response):
             # Fix formatting issues
             json_str = json_str.strip().replace("\n", "").replace("\'", "\"")
             # Convert to dictionary
-            return json.loads(json_str)
+            # return json.loads(json_str)
         else:
             return {"error": "Could not extract JSON from response."}
-    except json.JSONDecodeError:
-        return {"error": "Invalid JSON format."}
+        
+        # Convert human-readable keys to backend keys
+        temp_data = json.loads(json_str)
+        converted_data = {}
+
+        for human_key, value in temp_data.items():
+            matched = False
+            for backend_key, (label, _) in FIELD_MAPPING.items():
+                if human_key.lower() == label.lower():
+                    converted_data[backend_key] = value
+                    break
+            else:  # If no match found
+                converted_data[human_key] = value
+                
+        return converted_data
+    except Exception as e:
+        return {"error": str(e)}
+
+def get_human_readable_labels(fields):
+    """Convert backend keys to human-readable labels"""
+    return [FIELD_MAPPING.get(field, (field,))[0] for field in fields]
 
 def init(document):
     try:
         labels = [
-        "First Name", "Last Name", "Sex","Passport Number","Permanent Account Number", "Nationality",
+        "SSN", "Mobile Number", "First Name", "Last Name", "Sex","Passport Number","Permanent Account Number", "Nationality",
         "Date of Birth", "Place of Birth", "Date of Issue", "Date of Expiration"
         ]
         details = ", ".join(labels)
         model , messages = zero_shot_learning(details)
-        response = get_response(model, messages, document , details)
+        raw_response = get_response(model, messages, document , details)
+        processed_data = jsonification(raw_response)
+        if "error" in processed_data:
+            return processed_data    
+        return processed_data
+        # return json.loads(response)
     except Exception as e:
         return {"error": f"Processing failed: {str(e)}"}
-    return json.loads(response)

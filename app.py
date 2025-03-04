@@ -33,17 +33,51 @@ def chatbot():
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    if 'file' not in request.files:
+    if 'files' not in request.files:
         return jsonify({"response": "No file uploaded"}), 400
     
-    file = request.files['file']
-    filename = file.filename
-    if filename == '':
-        return jsonify({"response": "No selected file"}), 400
+    files = request.files.getlist('files')
+    if not files:
+        return jsonify({"response": "No selected files"}), 400
     
-    botresponse = bk.init(file)
-    print(botresponse)
-    return jsonify(botresponse)
+    accumulated_data = {}
+    conflicts = {}
+
+    for file in files[:5]:  # Process max 5 files
+        if file.filename == '':
+            continue
+
+        try:
+            # Get raw extracted data from model
+            file_data = bk.init(file)  
+            
+            # Conflict check logic
+            for key, value in file_data.items():
+                if value in ["NOT FOUND", "Not Found"]:
+                    continue  # Skip invalid values
+                if key in accumulated_data:
+                    if accumulated_data[key] != value:
+                        conflicts[key] = [accumulated_data[key], value]
+                else:
+                    accumulated_data[key] = value
+        except Exception as e:
+            return jsonify({"response": f"Error processing {file.filename}: {str(e)}"}), 500
+
+    # filename = file.filename
+    # if filename == '':
+    #     return jsonify({"response": "No selected file"}), 400
+    
+    # botresponse = bk.init(file)
+    # print(botresponse)
+    human_conflicts = {}
+    for field, values in conflicts.items():
+        human_label = bk.get_human_label(field)
+        human_conflicts[human_label] = values
+
+    return jsonify({
+        "data": accumulated_data,
+        "conflicts":human_conflicts if human_conflicts else None
+    })
 
 @app.route('/submit', methods=['POST'])
 def db_submit():

@@ -79,20 +79,27 @@ const sendMessage = async () => {
 // File Upload Handling
 // ======================
 const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
+    const uploadedFiles  = Array.from(event.target.files).slice(0, 5);
+    if (!uploadedFiles ) return;
 
     try {
+        const formData = new FormData();
+        uploadedFiles.forEach(file => formData.append('files', file));
+
         const response = await fetch('/upload', {
-        method: 'POST',
-        body: formData
+            method: 'POST',
+            body: formData
         });
         
-        const data = await response.json();
-        processUploadedData(data, file.name);
+        const { data, conflicts } = await response.json();
+        if (conflicts) {
+            const conflictMessage = `Conflicts detected:\n${Object.entries(conflicts)
+                .map(([field, values]) => `${field}: ${values.join(' vs ')}`)
+                .join('\n')}`;
+            addMessage(conflictMessage, 'bot');
+        } else {
+            processUploadedData(data, `${uploadedFiles.length} files processed`);
+        }
         event.target.value = ''; // Reset file input
     } catch (error) {
         addMessage('Failed to process the uploaded file.', 'bot');
@@ -102,6 +109,8 @@ const handleFileUpload = async (event) => {
 
 const processUploadedData = (data, filename) => {
     const fieldMapping = {
+        SSN: 'SSN',
+        MobileNumber: 'MobileNumber',
         FirstName: 'FirstName',
         LastName: 'LastName',
         Sex: 'Sex',
@@ -122,9 +131,9 @@ const processUploadedData = (data, filename) => {
         
         const value = data[key]?.trim();
         if (value && !["NOT FOUND", "Not Found", "not found"].includes(value)) {
-        inputField.value = value;
+            inputField.value = value;
         } else {
-        missingFields.push(key);
+            missingFields.push(key);
         }
     });
 

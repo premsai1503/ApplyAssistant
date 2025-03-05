@@ -1,9 +1,6 @@
 # Apply Assistant
 
-
-
-https://github.com/user-attachments/assets/af5dd01a-1e8c-456d-af11-a31f2ef55308
-
+## Latest Demo will be uploaded Soon
 
 
 https://github.com/user-attachments/assets/8fa29db3-6f46-4fea-8934-62bb50b25b3b

@@ -1,9 +1,12 @@
-from flask import Flask, request, jsonify, render_template, session, url_for , redirect
-from flask_session import Session
+# from flask import Flask, request, jsonify, render_template, session, url_for , redirect
+from flask import Flask, request, jsonify, render_template
+# from flask_session import Session
 import backend as bk
 import databasemodel as dbm
-import os
-import json
+# import json
+import uuid
+from pdf2image import convert_from_bytes
+import io
 
 app = Flask(__name__,
     template_folder='Frontend',
@@ -26,10 +29,33 @@ def form_page():
 @app.route('/chatbot', methods=['POST'])
 def chatbot():
     data = request.json
+    thread_id = request.headers.get('X-Thread-ID', str(uuid.uuid4()))
+    print(thread_id)
+
     user_message = data.get("message")
-    bot_response = {"response": "The Chat facility is under development! So, you can upload the document based on the form displayed"} # Replace with actual chatbot logic
-    
-    return jsonify(bot_response)
+    # bot_response = {"response": "The Chat facility is under development! So, you can upload the document based on the form displayed"} # Replace with actual chatbot logic
+    bot_response = bk.chatbot(
+            user_message=user_message,
+            thread_id=thread_id
+        )
+    print(bot_response)
+    # return jsonify(response)
+    return jsonify({
+        "response": bot_response,
+        "thread_id": thread_id
+    })
+
+# Helper function
+def process_data(file_data, accumulated_data, conflicts):
+    """Process extracted data and check conflicts"""
+    for key, value in file_data.items():
+        if value in ["NOT FOUND", "Not Found", "not found"]:
+            continue
+        if key in accumulated_data:
+            if accumulated_data[key] != value:
+                conflicts[key] = [accumulated_data[key], value]
+        else:
+            accumulated_data[key] = value
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -46,22 +72,51 @@ def upload():
     for file in files[:5]:  # Process max 5 files
         if file.filename == '':
             continue
-
+        
         try:
-            # Get raw extracted data from model
-            file_data = bk.init(file)  
-            
-            # Conflict check logic
-            for key, value in file_data.items():
-                if value in ["NOT FOUND", "Not Found"]:
-                    continue  # Skip invalid values
-                if key in accumulated_data:
-                    if accumulated_data[key] != value:
-                        conflicts[key] = [accumulated_data[key], value]
-                else:
-                    accumulated_data[key] = value
+            # Handle PDF files
+            if file.mimetype == 'application/pdf':
+                # Convert PDF to images
+                pdf_data = file.read()
+                images = convert_from_bytes(
+                    pdf_data,
+                    dpi=200,
+                    fmt='jpeg',
+                    thread_count=2
+                )
+                
+                # Process each page as image
+                for i, image in enumerate(images):
+                    img_byte_arr = io.BytesIO()
+                    image.save(img_byte_arr, format='JPEG')
+                    img_byte_arr.seek(0)
+                    
+                    # Process as image file
+                    file_data = bk.init(img_byte_arr)
+                    process_data(file_data, accumulated_data, conflicts)
+            else:  # Handle image files
+                file.stream.seek(0)  # Reset file pointer
+                file_data = bk.init(file)
+                process_data(file_data, accumulated_data, conflicts)
         except Exception as e:
             return jsonify({"response": f"Error processing {file.filename}: {str(e)}"}), 500
+        
+        # moving to helper function
+        # try:
+        #     # Get raw extracted data from model
+        #     file_data = bk.init(file)  
+            
+        #     # Conflict check logic
+        #     for key, value in file_data.items():
+        #         if value in ["NOT FOUND", "Not Found"]:
+        #             continue  # Skip invalid values
+        #         if key in accumulated_data:
+        #             if accumulated_data[key] != value:
+        #                 conflicts[key] = [accumulated_data[key], value]
+        #         else:
+        #             accumulated_data[key] = value
+        # except Exception as e:
+        #     return jsonify({"response": f"Error processing {file.filename}: {str(e)}"}), 500
 
     # filename = file.filename
     # if filename == '':

@@ -186,3 +186,36 @@
 .chatbot-messages::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+.shepherd-element {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 2px solid #d32f2f;
+}
+.shepherd-header {
+    background: #d32f2f;
+    color: white;
+    padding: 12px;
+    border-radius: 8px 8px 0 0;
+}
+.shepherd-text {
+    padding: 16px;
+    color: #333;
+}
+.shepherd-button {
+    background: #d32f2f !important;
+    color: white !important;
+}
+
+.shepherd-target-highlight {
+    box-shadow: 0 0 0 4px rgba(211,47,47,0.3);
+    border-radius: 8px;
+    position: relative;
+    z-index: 9999;
+}
+  
+.shepherd-modal-overlay-container {
+    z-index: 9998 !important;
+}
+

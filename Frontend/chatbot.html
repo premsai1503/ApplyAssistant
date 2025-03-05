@@ -6,10 +6,12 @@
     <title>Chatbot Component</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='chatbot/chatbot.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css">
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
 </head>
 <body>
     <!-- Chatbot Container -->
-    <div class="chatbot-container" id="chatbot">
+    <div class="chatbot-container visible" id="chatbot">
         <div class="chatbot-header">
             <span>Virtual Assistant</span>
             <button class="minimize-btn" type="button" aria-label="Minimize chat">
@@ -19,6 +21,9 @@
         
         <div class="chatbot-messages" id="chatbot-messages">
             <!-- Messages will be inserted here dynamically -->
+            <div id="upload-progress-container" style="display: none; margin: 10px;">
+                <progress id="upload-progress" value="0" max="100" style="width: 100%;"></progress>
+            </div>              
         </div>
         
         <div class="chatbot-input-container">
@@ -30,7 +35,7 @@
                        multiple 
                        hidden>
             </label>
-            <input type="text" 
+            <input type="text"
                    class="chatbot-input" 
                    id="chatbot-input" 
                    placeholder="Type your message..."
@@ -44,7 +49,7 @@
     </div>
 
     <!-- Chat Toggle Button -->
-    <button class="chatbot-button" 
+    <button class="chatbot-button"
             type="button" 
             aria-label="Open chat">
         <i class="fas fa-comment-dots"></i> Chat

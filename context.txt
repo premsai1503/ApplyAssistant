@@ -1,0 +1,196 @@
+<Feature>
+Auto Filling Process:
+The current forms need the following deatils for a successful account registration.
+They are :
+    {
+  "SSN": {
+    "description": "A unique nine-digit number issued by the Social Security Administration used for taxation, social security benefits, and identification.",
+    "location": "Typically found on your Social Security card and sometimes on tax documents."
+  },
+  "Mobile Number": {
+    "description": "Your personal cell phone number used for communication.",
+    "location": "Found on your mobile service contract, billing statements, or within digital profiles."
+  },
+  "First Name": {
+    "description": "Your given name as recorded on official documents.",
+    "location": "Appears on your birth certificate, passport, driver’s license, and other forms of identification."
+  },
+  "Last Name": {
+    "description": "Your family or surname as recorded on legal documents.",
+    "location": "Found on your birth certificate, passport, driver’s license, and other official documents."
+  },
+  "Sex": {
+    "description": "Denotes your gender, typically listed as 'Male' or 'Female'.",
+    "location": "Indicated on your passport, driver’s license, and birth certificate."
+  },
+  "Passport Number": {
+    "description": "A unique identifier assigned to your passport used for international travel.",
+    "location": "Printed on the information page of your U.S. passport."
+  },
+  "Nationality": {
+    "description": "Indicates your citizenship status, such as 'United States' or 'American' for U.S. nationals.",
+    "location": "Clearly stated on your passport or certificate of citizenship."
+  },
+  "Date of Birth": {
+    "description": "Your birthdate, a key piece of personal information.",
+    "location": "Printed on your birth certificate, passport, and driver’s license."
+  },
+  "Place of Birth": {
+    "description": "The location where you were born, often including the city, state, or country.",
+    "location": "Recorded on your birth certificate and may also appear in your passport."
+  },
+  "Date of Issue": {
+    "description": "The date on which an official document, like a passport or driver’s license, was issued.",
+    "location": "Found on the identification page of the document."
+  },
+  "Date of Expiration": {
+    "description": "The date when the document is no longer valid.",
+    "location": "Printed on your passport, driver’s license, or other official identification."
+  }
+}
+
+The user can upload documents which has the above information and you will process these documents and autofill the forms.
+If a single document doesn't have all the required deatils, they can upload multiple documents which has these details and you can process all these documents and consolidate the details.
+
+If you are not able to identify any required details, you will not fill that particular feild in the form. You will also let the
+user/customer know about the what feilds are missing.
+
+The user can upload upto 5 documents at a time. These documents can be images or pdfs. A clear image of the document or a clear scanning
+of the document(for pdfs) are recommended for better results.
+
+<PRODUCT_1>
+Way2Save® Savings
+A great account to help build your savings.
+Save as you spend --Set up Save As You Go® to automatically transfer $1 for every completed Bill Pay or one-time debit card purchase.
+Why pay fees?
+Way2Save Savings has more ways to avoid the monthly service fee
+
+Wells Fargo Way2Save® Savings interest rate
+| Balance                            | $0 or more |
+| Standard Interest Rate             | 0.01%      |
+| Annual Percentage Yield (APY)      | 0.01%      |
+| minimum opening Deposit            | $25        |
+
+Account fees and details
+Monthly service fee - $5 each fee period
+A fee period can have 25 to 35 days. How we track and report your account activity, including what’s provided in your account statements, doesn’t always match a calendar month. Instead, we use a fee period to determine the monthly service fee and other monthly fees. We also use the fee period to count the number of posted transactions we allow before charging a fee.
+
+How to avoid the fee - Avoid the $5 monthly service fee with one of the following each fee period:
+
+1. $300 minimum daily balance
+2. 1 automatic transfer each fee period of $25 or more from a linked Wells Fargo checking account
+3. 1 automatic transfer each business day within the fee period of $1 or more from a linked Wells Fargo checking account
+4. 1 or more Save As You Go1 transfers from a linked Wells Fargo checking account
+5. Primary account owner is 24 years old or under
+
+Other fees may apply - Please see the Consumer Account Fee and Information Schedule and Deposit Account Agreement for details
+Debit and ATM card - Access your savings with a Wells Fargo debit or ATM card
+Minimum age to open:
+1. Minors 12 and under can open a joint account with an adult with several options
+2. Anyone 13 and older can open as a primary owner
+3. 17 and under must open at a branch
+4. Must be 18 or older to apply online
+
+To open this account online, you'll need to:
+
+1. Be 18 years or older
+2. Know your Social Security Number (SSN) or Individual Taxpayer Identification Number (ITIN)
+3. Have a physical U.S. address
+4. Have your own mobile phone number
+
+To open this account at a branch, you'll need to:
+
+1. Know your Social Security Number (SSN) or Individual Taxpayer Identification Number (ITIN)
+2. Have two forms of identification (a primary and secondary ID)
+
+Non-U.S. citizens without a U.S. issued taxpayer identification number must provide a government issued ID that provides evidence of nationality or residence.
+Each primary account owner, co-owner, or joint owner will need these two forms of IDs.
+
+One primary ID (original version):
+
+- State-issued or U.S territory driver's license
+- State-issued or U.S territory ID card
+- Passport
+- U.S. Armed Forces ID
+- Permanent resident card
+- Employment authorization card
+- Border Crossing Card
+- Tribal Identification issued by a federally recognized U.S. tribal government
+- Consular card issued by Colombia, Guatemala, or Mexico
+- El Salvador Documento Unico do Identidad (DUI) card
+- Canadian driver's license or ID card issued in English (Quebec-issued IDs are not accepted)
+
+Plus a secondary ID (original version)
+
+- Any ID that's acceptable as a primary ID
+- ATM, credit, or debit card
+- Employee ID
+- Student ID
+- Social Security card (signed)
+- Birth certificate (original or certified copy)
+- ID issued by a recognized business, education institution, or government agency (domestic or foreign)
+Proof of address is required – If neither primary nor secondary ID contains your physical address, separate proof of address (for example a utility bill or school enrollment statement) will need to be provided.
+
+Minors without a primary ID need to be accompanied by an adult co-owner who is a relative or guardian, and bring identification such as a Social Security card, birth certificate, or student ID.
+FAQs:
+Q1. Are Wells Fargo savings accounts FDIC-insured?
+A. Yes, all Wells Fargo savings funds in both savings accounts and Certificate of Deposit (CD) accounts are FDIC-insured up to the maximum applicable limit.
+<PRODUCT_2>
+Platinum Savings
+Best for - Savings with the option to write checks
+
+Flexible access to your money - Your money will be ready when you need it — through online or mobile access, unlimited branch and Wells Fargo ATM withdrawals, and the option to write checks
+
+Standard Interest Rates
+-------------------------------------------------------------------
+| Balance  | Standard Interest Rate | Annual Percentage Yield(APY)|
+-------------------------------------------------------------------
+|$0 or more| 0.01%                 | 0.01%                        |
+-------------------------------------------------------------------
+
+Relationship Interest Rates (A Relationship Interest Rate is an interest rate available on eligible Savings or CD accounts, when those accounts are linked to a Prime Checking or Premier Checking account.)
+----------------------------------------------------------------------
+| Balance  | Relationship Interest Rate | Annual Percentage Yield(APY)|
+-----------------------------------------------------------------------
+|$0 or more| 0.02%                     | 0.02%                        |
+-----------------------------------------------------------------------
+
+Relationship Interest Rates - When linked to Premier Checking
+-----------------------------------------------------------------------------------
+| Balance              | Relationship Interest Rate | Annual Percentage Yield(APY)|
+-----------------------------------------------------------------------------------
+|$0 - $99,999.99       | 0.26%                     | 0.26%                        |
+-----------------------------------------------------------------------------------
+|$100,000 - $499,999.99| 1.01%                     | 1.02%                        |
+-----------------------------------------------------------------------------------
+|$500,000 - $999,999.99| 1.99%                     | 1.01%                        |
+-----------------------------------------------------------------------------------
+|$1,000,000 or more    | 2.48%                     | 2.51%                        |
+-----------------------------------------------------------------------------------
+
+Account fees and details:
+1. Monthly service fee - $12 Avoid the monthly service fee with a $3,500 minimum daily balance each fee period3
+2. Other fees Other fees may apply; please see the Consumer Account Fee and Information Schedule and Deposit Account Agreement for details
+3. How to open an account - You must be 18 or older to apply online
+                          - Minimum opening deposit: $25
+
+Age requirements:
+
+1. Anyone 13 and older can open as a primary owner
+2. Minors 12 and under can open but must have an adult co-owner
+3. Minors 17 years old and under must open at a branch
+
+To open this account online, you'll need to:
+
+1.Be 18 years or older
+2. Know your Social Security Number (SSN) or Individual Taxpayer Identification Number (ITIN)
+3. Have a physical U.S. address
+4. Have your own mobile phone number
+
+To open this account at a branch, you'll need to:
+
+1. Know your Social Security Number (SSN) or Individual Taxpayer Identification Number (ITIN)
+2. Have two forms of identification (a primary and secondary ID)
+
+Non-U.S. citizens without a U.S. issued taxpayer identification number must provide a government issued ID that provides evidence of nationality or residence.
+Primary and secondary id cards are similar to Way2Save savings account.

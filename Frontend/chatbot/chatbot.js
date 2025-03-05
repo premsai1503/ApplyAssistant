@@ -178,7 +178,7 @@ const initializeChatbot = () => {
     
     // Modified initial message check
     if (chatHistory.length === 0) {
-        addMessage('Hello! I can help automate your form filling process...', 'bot');
+        addMessage('Hi! I\'m your virtual assistant, here to automate your form filling experience. Upload upto 5 JPEG/PDF files at a time and I\'ll autofill the fields of the form based on the documents provided.', 'bot');
     } else {
         // Scroll to bottom if history exists
         const messageContainer = document.getElementById('chatbot-messages');

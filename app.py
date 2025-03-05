@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify, render_template, session, url_for , redirect
 from flask_session import Session
-import backend as bk
+import Ocr_model_backend as obk
 import databasemodel as dbm
+import Chat_model_backend as cbk
 import os
 import json
 
@@ -21,15 +22,25 @@ def savings_options():
 
 @app.route('/form' , methods=['GET' , 'POST'])
 def form_page():
+    cbk.setup()
     return render_template('form_page.html')
 
 @app.route('/chatbot', methods=['POST'])
 def chatbot():
-    data = request.json
-    user_message = data.get("message")
-    bot_response = {"response": "The Chat facility is under development! So, you can upload the document based on the form displayed"} # Replace with actual chatbot logic
+    # chat_history = request.get_json() # Expecting a list of messages
+    data = request.get_json()
+    user_message = data.get('user_message')
+    # if not isinstance(chat_history, list) or not chat_history:
+    #     return jsonify({'error': 'Invalid or empty chat history provided'}), 400
+
+    # user_message = chat_history[-1].get("text")  # Get the latest user message
+
+    if not user_message:
+        return jsonify({'error': 'No valid message found in chat history'}), 400
     
-    return jsonify(bot_response)
+    bot_response = cbk.get_response(user_message)
+
+    return jsonify({'bot_response': bot_response})
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -49,7 +60,7 @@ def upload():
 
         try:
             # Get raw extracted data from model
-            file_data = bk.init(file)  
+            file_data = obk.init(file)  
             
             # Conflict check logic
             for key, value in file_data.items():
@@ -71,7 +82,7 @@ def upload():
     # print(botresponse)
     human_conflicts = {}
     for field, values in conflicts.items():
-        human_label = bk.get_human_label(field)
+        human_label = obk.get_human_label(field)
         human_conflicts[human_label] = values
 
     return jsonify({
@@ -90,21 +101,6 @@ def db_submit():
 @app.route('/success')
 def success_page():
     return render_template('success.html')
-
-# @app.route('/chatbot', methods=['POST'])
-# def chatbot():
-#     data = request.json
-#     user_message = data.get("message").lower()
-    
-#     # Basic response logic
-#     responses = {
-#         "hello": "Hello! How can I assist you today?",
-#         "help": "I can help with form filling using document uploads. Try sending a passport image!",
-#         "default": "The chat facility is under development. Please use document upload for form filling."
-#     }
-    
-#     bot_response = responses.get(user_message, responses["default"])
-#     return jsonify({"response": bot_response})
 
 if __name__ == '__main__':
     app.run(debug=True)

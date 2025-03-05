@@ -346,8 +346,8 @@ const initializeChatbot = () => {
         addMessage(
             "Hello! I'm am Wells Fargo's new AI assistant. " + 
             "I'm here to answer any quiries you have about Wells Fargo products" +
-            " and you can use my new Autofill to automate the form filling process." + 
-            " To know more, start a conversation by saying Hi or Hello.", 
+            " and you can use my new Autofill feature to automate the form filling process by uploading your documents(images and pdfs)." + 
+            " To know more, start a conversation by saying Hi or say Hello or ask your questions right away.", 
             'bot'
         );
     } else {

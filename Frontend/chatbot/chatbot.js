@@ -11,12 +11,13 @@ const initializeTour = () => {
     // Step 1: Upload Button
     tour.addStep({
         id: 'upload-step',
-        text: 'Click here to upload documents (images/PDFs) for auto-filling the form!',
+        text: 'Click here to upload documents (images/PDFs) to auto-fill a form!',
         attachTo: {
         element: '.chatbot-upload-btn',
         on: 'right'
         },
         buttons: [
+        { text: 'Skip', action: tour.cancel },
         { text: 'Next', action: tour.next }
         ]
     });
@@ -88,10 +89,13 @@ const addMessage = (text, type, options = {}) => {
     if (options.id) {
         div.setAttribute('data-id', options.id);
     }
+    // Only save to history if not temporary
+    if (!options.temporary) {
+        chatHistory.push({ text, type });
+        saveChatState();
+    }
     messageContainer.appendChild(div);
-    
-    chatHistory.push({ text, type });
-    saveChatState();
+
     messageContainer.scrollTop = messageContainer.scrollHeight;
     window.addEventListener('resize', () => {
         const messageContainer = document.getElementById('chatbot-messages');
@@ -117,6 +121,22 @@ const sendMessage = async () => {
         currentThreadId = crypto.randomUUID();
         localStorage.setItem('chatThreadId', currentThreadId);
     }
+
+    // Add a typing indicator message with a unique id
+    const typingIndicatorId = 'typing-indicator';
+    let responseReceived = false;
+    
+    // Delay before showing the typing indicator
+    const typingIndicatorTimeout = setTimeout(() => {
+        if (!responseReceived) {
+            addMessage('Bot is typing...', 'bot', { id: typingIndicatorId, temporary: true });
+            // Add CSS class for fade-in effect
+            const indicator = document.querySelector(`[data-id="${typingIndicatorId}"]`);
+            if (indicator) {
+                indicator.classList.add('fade-in');
+            }
+        }
+    }, 500); // 500ms delay
     
     try {
         const response = await fetch('/chatbot', {
@@ -130,10 +150,21 @@ const sendMessage = async () => {
         
         const data = await response.json();
         console.log(data)
+
+        // Remove the typing indicator before showing the actual bot message
+        const typingIndicator = document.querySelector(`[data-id="${typingIndicatorId}"]`);
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+
         addMessage(data.response, 'bot');
         currentThreadId = data.thread_id; // Update if new thread created
         localStorage.setItem('chatThreadId', currentThreadId);
     } catch (error) {
+        const typingIndicator = document.querySelector(`[data-id="${typingIndicatorId}"]`);
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
         addMessage('Sorry, there was an error processing your request.', 'bot');
         console.error('Chat error:', error);
     }
@@ -170,7 +201,7 @@ const showProgressBar = () => {
   // Add a processing message to the chat
   const showProcessingMessage = () => {
     // Optionally, add a special flag so you can remove this specific message later.
-    addMessage('Files are being processed...', 'bot', { id: 'processing-msg' });
+    addMessage('Files are being processed...', 'bot', { id: 'processing-msg', temporary:true });
   };
   
   // Remove the processing message from the chat
@@ -191,6 +222,10 @@ const handleFileUpload = async (event) => {
     if (!uploadedFiles ) return;
 
     try {
+        // Get filenames
+        const fileNames = uploadedFiles.map(file => file.name).join(', ');
+        
+        addMessage(`Uploaded files: ${fileNames}`, 'user');
 
         // Show progress bar and processing message
         showProgressBar();
@@ -296,8 +331,8 @@ const processUploadedData = (data, filename) => {
     });
 
     const message = missingFields.length > 0
-        ? `Received ${filename}. Missing fields: ${missingFields.join(', ')}`
-        : `Received ${filename}. All fields extracted successfully.`;
+        ? `${filename}. Missing fields: ${missingFields.join(', ')}`
+        : `${filename}. All fields extracted successfully.`;
 
     addMessage(message, 'bot');
 };
@@ -317,9 +352,9 @@ const toggleChatbot = () => {
     console.log("In toggle");
     console.log(localStorage.getItem('tourCompleted'));
     // comment out this reset the tour when chat is minimized
-    if (!isChatVisible) {
-        localStorage.removeItem('tourCompleted');
-    }
+    // if (!isChatVisible) {
+    //     localStorage.removeItem('tourCompleted');
+    // }
 };
 
 // ======================
@@ -344,10 +379,10 @@ const initializeChatbot = () => {
     // Modified initial message check
     if (chatHistory.length === 0) {
         addMessage(
-            "Hello! I'm am Wells Fargo's new AI assistant. " + 
-            "I'm here to answer any quiries you have about Wells Fargo products" +
-            " and you can use my new Autofill feature to automate the form filling process by uploading your documents(images and pdfs)." + 
-            " To know more, start a conversation by saying Hi or say Hello or ask your questions right away.", 
+            "Hello! I'm am Wells Fargo's AI assistant. " + 
+            "I'm here to answer any queries you have about Wells Fargo products.\n" +
+            " I can also help you to automate the form filling process.",
+            // " To know more, start a conversation by saying Hi or say Hello or ask your questions right away.", 
             'bot'
         );
     } else {
@@ -375,9 +410,17 @@ const initializeChatbot = () => {
     console.log(localStorage.getItem('tourCompleted'));
     // if (!localStorage.getItem('tourCompleted')) {
         setTimeout(() => {
-          initializeTour();
-          tour.start();
-          localStorage.setItem('tourCompleted', 'true');
+            initializeTour();
+            // Add this event listener for tour completion
+            tour.on('complete', () => {
+                localStorage.setItem('tourCompleted', 'true');
+            });
+
+            // Add this event listener for tour cancellation
+            tour.on('cancel', () => {
+                localStorage.setItem('tourCompleted', 'true');
+            });
+            tour.start();
         }, 2000); // Start tour 2 seconds after page load
     // }
     console.log(localStorage.getItem('tourCompleted'));

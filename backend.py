@@ -254,7 +254,7 @@ def chatbot(user_message: str, thread_id: str = "default"):
         content=[
             {
                 "type" : "text", 
-                "text" : user_message + ". Answer in 75 words"
+                "text" : user_message + ". Answer in 50 words. If its a greeting keep it to 30 words."
             }
         ]
     )

@@ -64,9 +64,9 @@
             margin-top: 10px;
         }
         .form-page {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
         .button-group {
             display: flex;
@@ -92,6 +92,14 @@
             border: 1px solid #ccc; /* Optional: add border */
             border-radius: 5px; /* Optional: rounded corners */
         }
+        .ssn-toggle {
+            margin-left: 5px;
+        }
+        .ssn-toggle input[type="checkbox"] {
+            margin: 0;
+            width: 15px;
+            height: 15px;
+        }
     </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='chatbot/chatbot.css') }}">  
 </head>
@@ -105,8 +113,12 @@
                 <!-- Page 1 -->
                 <div class="form-page" id="page1">
                     <label for="SSN">Social Security Number:</label>
-                    <input type="text" id="SSN" name="SSN" required pattern="\d{3}-\d{2}-\d{4}" 
-                        title="Format: 123-45-6789">
+                    <input type="password" id="SSN" name="SSN" required pattern="\d{3}-\d{2}-\d{4}" 
+                        title="Format: 123-45-6789" autocomplete="off">
+                    <div class="ssn-toggle" style="display: flex; align-items: center; gap: 5px; margin: 5px 0;">
+                        <input type="checkbox" id="showSSN" onchange="toggleSSNVisibility()">
+                        <label for="showSSN" style="font-size: 14px; color: #666;margin: 5px;">Show SSN</label>
+                    </div>
                     
                     <label for="MobileNumber">Mobile Number:</label>
                     <input type="tel" id="MobileNumber" name="MobileNumber" required 
@@ -234,6 +246,12 @@
                 alert("An error occurred while submitting the form." || responseData.message);
             });
             form.reset(); // Clear form after successful submission
+        }
+        // Add this to the script section
+        function toggleSSNVisibility() {
+            const ssnField = document.getElementById('SSN');
+            const checkbox = document.getElementById('showSSN');
+            ssnField.type = checkbox.checked ? 'text' : 'password';
         }
     </script>
 </body>

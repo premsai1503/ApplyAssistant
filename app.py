@@ -49,10 +49,11 @@ def chatbot():
 def process_data(file_data, accumulated_data, conflicts):
     """Process extracted data and check conflicts"""
     for key, value in file_data.items():
-        if value in ["NOT FOUND", "Not Found", "not found"]:
+        # if value in ["NOT FOUND", "Not Found", "not found"]:
+        if value.lower() == "not found":
             continue
         if key in accumulated_data:
-            if accumulated_data[key] != value:
+            if accumulated_data[key].lower() != value.lower():
                 conflicts[key] = [accumulated_data[key], value]
         else:
             accumulated_data[key] = value

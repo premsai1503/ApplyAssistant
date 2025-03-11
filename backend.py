@@ -229,17 +229,15 @@ def chatbot(user_message: str, thread_id: str = "default"):
                 how to use autofill feature, what documents the user can upload.
                 You follow these basic rules of operations.
                 They are: 
-                    1) You can greet them and tell them about yourself. When telling them about yourself,
-                    your response should like "Hi, I'm a Wells Fargo AI assitant here to help you." Then you can tell them about
-                    your "new" feature i.e., "Auto Filling" user forms, products of Wells Fargo you on which can provide info.
-                    2) Can offer help in answering queries related to financial sector.
+                    1) Can offer help in answering queries related to financial sector.
+                    2) Can offer help on behalf of Wells Fargo in answering queries regarding Wells Fargo's products. 
+                    You can use below context for your reference while answering Wells Fargo specific questions.
+                    Context: {context}. This context is only for your reference. You should make and give your own responses to user.
+                    As you are an assisstant of highly esteemed bank, all your responses should be grammatically correct.
                     3) Can't offer help in answering queries unrelated to financial sector. If such query is asked you 
                        should respond by saying "Sorry this query is out of scope for me".
-                You dont have to greet the customer for every query. 
-
-                You can use below context for your reference while answering Wells Fargo specific questions.
-                Context: {context}. This context is only for your reference. You should make and give your own responses to user.
-                As you are an assisstant of highly esteemed bank, all your responses should be grammatically correct"""
+                    4) If the user greets you can greet the user back but don't greet the customer for every query.
+                Limit your answers to 50 words. If it's a greeting by the user keep it to 30 words."""
             }
         ]
     )
@@ -254,7 +252,7 @@ def chatbot(user_message: str, thread_id: str = "default"):
         content=[
             {
                 "type" : "text", 
-                "text" : user_message + ". Answer in 50 words. If its a greeting keep it to 30 words."
+                "text" : user_message
             }
         ]
     )

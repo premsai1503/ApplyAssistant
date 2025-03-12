@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Your Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            padding: 50px;
+            display: flex;
+            justify-content: center;
+        }
+        .header {
+            width: 100%;
+            background-color: #d32f2f;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+        .review-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .review-container h2 {
+            text-align: center;
+        }
+        .review-item {
+            font-size: 16px;
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .submit-btn, .back-btn {
+            flex: 1;
+            padding: 12px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .submit-btn {
+            background-color: #d32f2f;
+        }
+        .back-btn {
+            background-color: #007bff;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #d32f2f;
+            border-bottom: 2px solid #d32f2f;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">Review Your Information</div>
+    <div class="container">
+        <div class="review-container">
+            <h2>Confirm Your Details</h2>
+
+            <!-- Page 1 Details -->
+            <div class="section-title">Page 1 Details</div>
+            <div class="review-item"><strong>SSN:</strong> <span id="reviewSSN"></span></div>
+            <div class="review-item"><strong>Mobile Number:</strong> <span id="reviewMobile"></span></div>
+
+            <!-- Page 2 Details -->
+            <div class="section-title">Page 2 Details</div>
+            <div class="review-item"><strong>First Name:</strong> <span id="reviewFirstName"></span></div>
+            <div class="review-item"><strong>Last Name:</strong> <span id="reviewLastName"></span></div>
+            <div class="review-item"><strong>Sex:</strong> <span id="reviewSex"></span></div>
+            <div class="review-item"><strong>Nationality:</strong> <span id="reviewNationality"></span></div>
+            <div class="review-item"><strong>Date of Birth:</strong> <span id="reviewDOB"></span></div>
+            <div class="review-item"><strong>Place of Birth:</strong> <span id="reviewPOB"></span></div>
+            <div class="review-item"><strong>Passport Number:</strong> <span id="reviewPassport"></span></div>
+            <div class="review-item"><strong>Date of Issue:</strong> <span id="reviewDOI"></span></div>
+            <div class="review-item"><strong>Date of Expiration:</strong> <span id="reviewDOE"></span></div>
+
+            <div class="button-group">
+                <button class="back-btn" onclick="goBack()">Back</button>
+                <button class="submit-btn" onclick="submitReview()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Retrieve form data from local storage and display it
+        window.onload = function() {
+            let formData = JSON.parse(localStorage.getItem("formData")); // Parse JSON data
+
+            if (formData) {
+                // Page 1 Details
+                document.getElementById('reviewFirstName').textContent = formData.FirstName || '';
+                document.getElementById('reviewLastName').textContent = formData.LastName || '';
+                document.getElementById('reviewSex').textContent = formData.Sex || '';
+                document.getElementById('reviewNationality').textContent = formData.Nationality || '';
+                document.getElementById('reviewDOB').textContent = formData.DateofBirth || '';
+                document.getElementById('reviewPOB').textContent = formData.PlaceofBirth || '';
+
+                // Page 2 Details
+                document.getElementById('reviewSSN').textContent = formData.SSN || '';
+                document.getElementById('reviewMobile').textContent = formData.MobileNumber || '';
+                document.getElementById('reviewPassport').textContent = formData.PassportNumber || '';
+                document.getElementById('reviewDOI').textContent = formData.DateofIssue || '';
+                document.getElementById('reviewDOE').textContent = formData.DateofExpiration || '';
+            }
+        };
+
+        // Function to go back to the form page
+        function goBack() {
+            window.history.back(); // Moves back to the previous page
+        }
+
+        // Function to submit review
+        function submitReview() {
+            window.location.href = 'success.html'; // Redirect to success page
+        }
+    </script>
+</body>
+</html>

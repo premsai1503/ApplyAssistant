@@ -1,16 +1,66 @@
-// Frontend/chatbot/chatbot.js
+// Tour
+let tour;
+const initializeTour = () => {
+    tour = new Shepherd.Tour({
+      defaultStepOptions: {
+        classes: 'shepherd-theme-custom',
+        scrollTo: { behavior: 'smooth', block: 'center' }
+      }
+    });
+
+    // Step 1: Upload Button
+    tour.addStep({
+        id: 'upload-step',
+        text: 'Click here to upload documents (images/PDFs) to auto-fill a form!',
+        attachTo: {
+        element: '.chatbot-upload-btn',
+        on: 'right'
+        },
+        buttons: [
+        { text: 'Skip', action: tour.cancel },
+        { text: 'Next', action: tour.next }
+        ]
+    });
+
+    // Step 2: Input Field
+    tour.addStep({
+        id: 'input-step',
+        text: 'Type your questions here about account opening or banking services',
+        attachTo: {
+        element: '.chatbot-input',
+        on: 'top'
+        },
+        buttons: [
+        { text: 'Back', action: tour.back },
+        { text: 'Next', action: tour.next }
+        ]
+    });
+
+    // Step 3: Minimize Button
+    tour.addStep({
+        id: 'minimize-step',
+        text: 'Click here to minimize the chat window when you need more space',
+        attachTo: {
+        element: '.minimize-btn',
+        on: 'left'
+        },
+        buttons: [
+        { text: 'Back', action: tour.back },
+        { text: 'Finish', action: tour.complete }
+        ]
+    });
+};
 
 // ======================
 // Chatbot State Management
 // ======================
 let chatHistory = JSON.parse(sessionStorage.getItem('chatHistory')) || [];
-let isChatVisible = sessionStorage.getItem('chatVisible') === 'true';
+let isChatVisible = (sessionStorage.getItem('chatVisible') || 'true') === 'true';;
 
 const saveChatState = () => {
     sessionStorage.setItem('chatHistory', JSON.stringify(chatHistory));
     sessionStorage.setItem('chatVisible', isChatVisible.toString());
 };
-
 // ======================
 // Core Chatbot Functions
 // ======================
@@ -31,15 +81,21 @@ const loadChatHistory = () => {
     }, 50);
 };
 
-const addMessage = (text, type) => {
+const addMessage = (text, type, options = {}) => {
     const messageContainer = document.getElementById('chatbot-messages');
     const div = document.createElement('div');
     div.classList.add('message', type);
     div.textContent = text;
+    if (options.id) {
+        div.setAttribute('data-id', options.id);
+    }
+    // Only save to history if not temporary
+    if (!options.temporary) {
+        chatHistory.push({ text, type });
+        saveChatState();
+    }
     messageContainer.appendChild(div);
-    
-    chatHistory.push({ text, type });
-    saveChatState();
+
     messageContainer.scrollTop = messageContainer.scrollHeight;
     window.addEventListener('resize', () => {
         const messageContainer = document.getElementById('chatbot-messages');
@@ -50,6 +106,7 @@ const addMessage = (text, type) => {
 // ======================
 // Message Handling
 // ======================
+let currentThreadId = localStorage.getItem('chatThreadId') || '';
 const sendMessage = async () => {
     const inputField = document.getElementById('chatbot-input');
     const message = inputField.value.trim();
@@ -59,21 +116,103 @@ const sendMessage = async () => {
     // Add user message
     addMessage(message, 'user');
     inputField.value = '';
+
+    if (!currentThreadId) {
+        currentThreadId = crypto.randomUUID();
+        localStorage.setItem('chatThreadId', currentThreadId);
+    }
+
+    // Add a typing indicator message with a unique id
+    const typingIndicatorId = 'typing-indicator';
+    let responseReceived = false;
+    
+    // Delay before showing the typing indicator
+    const typingIndicatorTimeout = setTimeout(() => {
+        if (!responseReceived) {
+            addMessage('Bot is typing...', 'bot', { id: typingIndicatorId, temporary: true });
+            // Add CSS class for fade-in effect
+            const indicator = document.querySelector(`[data-id="${typingIndicatorId}"]`);
+            if (indicator) {
+                indicator.classList.add('fade-in');
+            }
+        }
+    }, 500); // 500ms delay
     
     try {
         const response = await fetch('/chatbot', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-Thread-ID': currentThreadId 
+        },
         body: JSON.stringify({ message })
         });
         
         const data = await response.json();
+        console.log(data)
+
+        // Remove the typing indicator before showing the actual bot message
+        const typingIndicator = document.querySelector(`[data-id="${typingIndicatorId}"]`);
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+
         addMessage(data.response, 'bot');
+        currentThreadId = data.thread_id; // Update if new thread created
+        localStorage.setItem('chatThreadId', currentThreadId);
     } catch (error) {
+        const typingIndicator = document.querySelector(`[data-id="${typingIndicatorId}"]`);
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
         addMessage('Sorry, there was an error processing your request.', 'bot');
         console.error('Chat error:', error);
     }
 };
+
+// progress bar
+
+// Show the progress bar container and reset its value
+const showProgressBar = () => {
+    const progressContainer = document.getElementById('upload-progress-container');
+    const progressBar = document.getElementById('upload-progress');
+    if (progressContainer && progressBar) {
+      progressBar.value = 0;
+      progressContainer.style.display = 'block';
+    }
+  };
+  
+  // Update the progress bar value
+  const updateProgressBar = (percent) => {
+    const progressBar = document.getElementById('upload-progress');
+    if (progressBar) {
+      progressBar.value = percent;
+    }
+  };
+  
+  // Hide the progress bar container
+  const hideProgressBar = () => {
+    const progressContainer = document.getElementById('upload-progress-container');
+    if (progressContainer) {
+      progressContainer.style.display = 'none';
+    }
+  };
+  
+  // Add a processing message to the chat
+  const showProcessingMessage = () => {
+    // Optionally, add a special flag so you can remove this specific message later.
+    addMessage('Files are being processed...', 'bot', { id: 'processing-msg', temporary:true });
+  };
+  
+  // Remove the processing message from the chat
+  const removeProcessingMessage = () => {
+    const messageContainer = document.getElementById('chatbot-messages');
+    const processingMsg = messageContainer.querySelector('[data-id="processing-msg"]');
+    if (processingMsg) {
+      processingMsg.remove();
+    }
+  };
+  
 
 // ======================
 // File Upload Handling
@@ -83,24 +222,78 @@ const handleFileUpload = async (event) => {
     if (!uploadedFiles ) return;
 
     try {
+        // Get filenames
+        const fileNames = uploadedFiles.map(file => file.name).join(', ');
+        
+        addMessage(`Uploaded files: ${fileNames}`, 'user');
+
+        // Show progress bar and processing message
+        showProgressBar();
+        showProcessingMessage();
+
         const formData = new FormData();
         uploadedFiles.forEach(file => formData.append('files', file));
 
-        const response = await fetch('/upload', {
-            method: 'POST',
-            body: formData
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/upload');
+
+        // Listen for progress events on the upload
+        xhr.upload.addEventListener('progress', (e) => {
+            if (e.lengthComputable) {
+            const percentComplete = Math.round((e.loaded / e.total) * 100);
+            console.log(`Progress: ${percentComplete}% (loaded: ${e.loaded} bytes, total: ${e.total} bytes)`);
+            updateProgressBar(percentComplete);
+            }
         });
+
+        xhr.onload = function () {
+            // Hide progress bar after completion
+            hideProgressBar();
+            // Remove the processing message
+            removeProcessingMessage();
         
-        const { data, conflicts } = await response.json();
-        if (conflicts) {
-            const conflictMessage = `Conflicts detected:\n${Object.entries(conflicts)
-                .map(([field, values]) => `${field}: ${values.join(' vs ')}`)
-                .join('\n')}`;
-            addMessage(conflictMessage, 'bot');
-        } else {
-            processUploadedData(data, `${uploadedFiles.length} files processed`);
-        }
+            if (xhr.status >= 200 && xhr.status < 300) {
+              const response = JSON.parse(xhr.responseText);
+              const { data, conflicts } = response;
+              if (conflicts) {
+                const conflictMessage = `Conflicts detected:\n${Object.entries(conflicts)
+                  .map(([field, values]) => `${field}: ${values.join(' vs ')}`)
+                  .join('\n')}`;
+                addMessage(conflictMessage, 'bot');
+              } else {
+                processUploadedData(data, `${uploadedFiles.length} files processed`);
+              }
+            } else {
+              addMessage('Failed to process the uploaded file.', 'bot');
+              console.error('Upload error:', xhr.statusText);
+            }
+        };
+
+        xhr.onerror = function () {
+            hideProgressBar();
+            removeProcessingMessage();
+            addMessage('Failed to process the uploaded file.', 'bot');
+            console.error('Upload error:', xhr.statusText);
+        };
+        
+        xhr.send(formData);
         event.target.value = ''; // Reset file input
+
+        // const response = await fetch('/upload', {
+        //     method: 'POST',
+        //     body: formData
+        // });
+        
+        // const { data, conflicts } = await response.json();
+        // if (conflicts) {
+        //     const conflictMessage = `Conflicts detected:\n${Object.entries(conflicts)
+        //         .map(([field, values]) => `${field}: ${values.join(' vs ')}`)
+        //         .join('\n')}`;
+        //     addMessage(conflictMessage, 'bot');
+        // } else {
+        //     processUploadedData(data, `${uploadedFiles.length} files processed`);
+        // }
+        // event.target.value = ''; // Reset file input
     } catch (error) {
         addMessage('Failed to process the uploaded file.', 'bot');
         console.error('Upload error:', error);
@@ -138,8 +331,8 @@ const processUploadedData = (data, filename) => {
     });
 
     const message = missingFields.length > 0
-        ? `Received ${filename}. Missing fields: ${missingFields.join(', ')}`
-        : `Received ${filename}. All fields extracted successfully.`;
+        ? `${filename}. Missing fields: ${missingFields.join(', ')}`
+        : `${filename}. All fields extracted successfully.`;
 
     addMessage(message, 'bot');
 };
@@ -155,12 +348,19 @@ const toggleChatbot = () => {
     chatbot.classList.toggle('visible', isChatVisible);
     chatButton.style.display = isChatVisible ? 'none' : 'block';
     saveChatState();
+
+    console.log("In toggle");
+    console.log(localStorage.getItem('tourCompleted'));
+    // comment out this reset the tour when chat is minimized
+    // if (!isChatVisible) {
+    //     localStorage.removeItem('tourCompleted');
+    // }
 };
 
 // ======================
 // Initialization
 // ======================
-let isInitialized = false; // Add this flag
+let isInitialized = false;
 const initializeChatbot = () => {
     
     if (isInitialized) return;
@@ -178,7 +378,13 @@ const initializeChatbot = () => {
     
     // Modified initial message check
     if (chatHistory.length === 0) {
-        addMessage('Hi! I\'m your virtual assistant, here to automate your form filling experience. Upload upto 5 JPEG/PDF files at a time and I\'ll autofill the fields of the form based on the documents provided.', 'bot');
+        addMessage(
+            "Hello! I'm am Wells Fargo's AI assistant. " + 
+            "I'm here to answer any queries you have about Wells Fargo products.\n" +
+            " I can also help you to automate the form filling process.",
+            // " To know more, start a conversation by saying Hi or say Hello or ask your questions right away.", 
+            'bot'
+        );
     } else {
         // Scroll to bottom if history exists
         const messageContainer = document.getElementById('chatbot-messages');
@@ -188,13 +394,9 @@ const initializeChatbot = () => {
     document.querySelector('.chatbot-button').addEventListener('click', toggleChatbot);
     
     // Set initial visibility
-    document.getElementById('chatbot').classList.remove('visible'); // Force hidden initially
-    document.querySelector('.chatbot-button').style.display = 'block';
-    
-    // Add initial message if empty
-    if (chatHistory.length === 0) {
-        addMessage('Hi! I\'m your virtual assistant, here to automate your form filling experience. Upload upto 5 JPEG/PDF files at a time and I\'ll autofill the fields of the form based on the documents provided.', 'bot');
-    }
+    // document.getElementById('chatbot').classList.remove('visible'); // Force hidden initially
+    document.querySelector('.chatbot-button').style.display = isChatVisible ? 'none' : 'block';
+
 
     // Event Listeners
     document.getElementById('chatbot-input').addEventListener('keypress', (e) => {
@@ -204,6 +406,24 @@ const initializeChatbot = () => {
     document.querySelector('.chatbot-send-btn').addEventListener('click', sendMessage);
     document.getElementById('chatbot-upload').addEventListener('change', handleFileUpload);
     document.querySelector('.minimize-btn').addEventListener('click', toggleChatbot);
+
+    console.log(localStorage.getItem('tourCompleted'));
+    // if (!localStorage.getItem('tourCompleted')) {
+        setTimeout(() => {
+            initializeTour();
+            // Add this event listener for tour completion
+            tour.on('complete', () => {
+                localStorage.setItem('tourCompleted', 'true');
+            });
+
+            // Add this event listener for tour cancellation
+            tour.on('cancel', () => {
+                localStorage.setItem('tourCompleted', 'true');
+            });
+            tour.start();
+        }, 2000); // Start tour 2 seconds after page load
+    // }
+    console.log(localStorage.getItem('tourCompleted'));
 };
 
 // Export functions for module usage

@@ -23,7 +23,8 @@
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
         .account-card {
@@ -86,10 +87,10 @@
         <div class="account-card most-popular">
             <h3>Way2Save Savings</h3>
             <ul class="account-features">
-                <li>Best for: Saving as you spend with automatic transfers</li>
-                <li>Monthly fee: $5 (waivable)</li>
-                <li>Minimum deposit: $25</li>
-                <li>Overdraft protection available</li>
+                <li><strong>Best for:</strong>  Saving as you spend with automatic transfers</li>
+                <li><strong>Monthly fee:</strong> $5 (waivable)</li>
+                <li><strong>Minimum deposit:</strong> $25</li>
+                <li><strong>Overdraft services:</strong> Overdraft protection available</li>
             </ul>
             <button class="select-btn" onclick="location.href='/form'">Select</button>
         </div>
@@ -98,10 +99,10 @@
         <div class="account-card">
             <h3>Platinum Savings</h3>
             <ul class="account-features">
-                <li>Best for: Higher balance savings</li>
-                <li>Monthly fee: $12 (waivable with $3,500 balance)</li>
-                <li>Minimum deposit: $25</li>
-                <li>Check writing privileges</li>
+                <li><strong>Best for:</strong> Higher balance savings</li>
+                <li><strong>Monthly fee:</strong> $12 (waivable with $3,500 balance)</li>
+                <li><strong>Minimum deposit:</strong> $25</li>
+                <li><strong>Other Perks:</strong> Check writing privileges</li>
             </ul>
             <button class="select-btn" onclick="location.href='/form'">Select</button>
         </div>
@@ -110,10 +111,10 @@
         <div class="account-card">
             <h3>Certificates of Deposit</h3>
             <ul class="account-features">
-                <li>Best for: Fixed-term savings</li>
-                <li>Terms: Flexible term options from 3 months to a year or more</li>
-                <li>Minimum deposit: $2,500</li>
-                <li>No monthly fees</li>
+                <li><strong>Best for:</strong> Fixed-term savings</li>
+                <li><strong>Terms:</strong> Flexible term options from 3 months to a year or more</li>
+                <li><strong>Minimum deposit:</strong> $2,500</li>
+                <li><strong>Monthly fee:</strong> No monthly fees</li>
             </ul>
             <button class="select-btn" onclick="location.href='/form'">Select</button>
         </div>
